@@ -120,7 +120,7 @@ signed main(const int argc, const char * const * const argv) {
         exit(0);
     }
 
-    { // ctype is<type> <char>
+    { // $ ctype is<type> <char>
         if (verb[0] == 'i'
         &&  verb[1] == 's') {
             if (argc < 3) {
@@ -137,12 +137,12 @@ signed main(const int argc, const char * const * const argv) {
 
             for (auto o = objects; o->name != NULL; o++) {
                 if (!strcmp(verb, o->name)) {
-                    // NOTE:
-                    //  ctype functions are not guaranteed to return 0-1;
-                    //  this may or may not be a problem, idk;
-                    //  bash shares the definition of truthly, so it should be fine;
-                    //    return o->function(subject[0]) ? 1 : 0;
-                    return o->function(subject[0]);
+                    // NOTE: ctype functions return "non-zero" on true,
+                    //        which does not play nice with 8bit exit codes;
+                    //        in addition shells flip truthly for program success,
+                    //        i.e. we must swap the value in order to be able to have:
+                    //          $ if ctype isdigit 1; then echo true; fi
+                    return o->function(subject[0]) ? 0 : 1;
                 }
             }
 
@@ -150,7 +150,7 @@ signed main(const int argc, const char * const * const argv) {
         }
     } // --
     
-    { // ctype <type>
+    { // $ ctype <type>
         for (auto o = objects; o->name != NULL; o++) {
             if (!strcmp(verb, o->name)) {
                 print_matching(o->function);
