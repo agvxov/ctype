@@ -139,7 +139,7 @@ signed main(const int argc, const char * const * const argv) {
                 if (!strcmp(verb, o->name)) {
                     // NOTE: ctype functions return "non-zero" on true,
                     //        which does not play nice with 8bit exit codes;
-                    //        in addition shells flip truthly for program success,
+                    //        in addition, shells flip truthly for program success,
                     //        i.e. we must swap the value in order to be able to have:
                     //          $ if ctype isdigit 1; then echo true; fi
                     return o->function(subject[0]) ? 0 : 1;
